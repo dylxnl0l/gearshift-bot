@@ -1,7 +1,28 @@
 const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const config = require('./config.json');
+// Load configuration from environment variables or config.json
+const config = process.env.DISCORD_TOKEN ? {
+    token: process.env.DISCORD_TOKEN,
+    clientId: process.env.CLIENT_ID,
+    guildId: process.env.GUILD_ID,
+    channels: {
+        logs: process.env.LOGS_CHANNEL_ID,
+        tickets: process.env.TICKETS_CHANNEL_ID
+    },
+    roles: {
+        moderator: process.env.MODERATOR_ROLE_ID,
+        admin: process.env.ADMIN_ROLE_ID,
+        owner: process.env.OWNER_ROLE_ID
+    },
+    music: {
+        maxQueueSize: parseInt(process.env.MAX_QUEUE_SIZE) || 50,
+        defaultVolume: parseFloat(process.env.DEFAULT_VOLUME) || 0.5
+    },
+    developer: {
+        userId: process.env.DEVELOPER_USER_ID
+    }
+} : require('./config.json');
 
 // Create a new client instance
 const client = new Client({

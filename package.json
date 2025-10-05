@@ -1,0 +1,25 @@
+{
+  "name": "discord-moderation-bot",
+  "version": "1.0.0",
+  "description": "A modern Discord bot with moderation, tickets, and music features",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["discord", "bot", "moderation", "music", "tickets"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "@discordjs/voice": "^0.16.1",
+    "ytdl-core": "^4.11.5",
+    "youtube-sr": "^4.3.4",
+    "spotify-web-api-node": "^5.0.2",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

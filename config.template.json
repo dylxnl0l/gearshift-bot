@@ -1,0 +1,21 @@
+{
+  "token": "YOUR_BOT_TOKEN_HERE",
+  "clientId": "1424490534491127993",
+  "guildId": "1407091501850431708",
+  "channels": {
+    "logs": "1425322663836127263",
+    "tickets": "1407498823298842685"
+  },
+  "roles": {
+    "moderator": "1421279984634560622",
+    "admin": "1407192703019516091",
+    "owner": "1407091540752466051"
+  },
+  "music": {
+    "maxQueueSize": 50,
+    "defaultVolume": 0.5
+  },
+  "developer": {
+    "userId": "698234989560725575"
+  }
+}

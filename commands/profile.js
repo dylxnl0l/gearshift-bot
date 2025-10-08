@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const EmbedUtils = require('../utils/embeds');
 const ErrorHandler = require('../utils/errorHandler');
 

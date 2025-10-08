@@ -234,7 +234,8 @@ module.exports = {
             // Create ticket embed
             const ticketEmbed = EmbedUtils.createTicketEmbed(
                 'Support Ticket Created',
-                `Thanks for contacting support! A staff member will be with you soon.`
+                `Thanks for contacting support! A staff member will be with you soon.`,
+                interaction.user
             ).addFields(
                 { name: '📋 Ticket ID', value: `#${ticketChannel.id.slice(-6)}`, inline: true },
                 { name: '👤 Created By', value: interaction.user.tag, inline: true },
@@ -309,7 +310,8 @@ module.exports = {
         // Update ticket embed to show claimed status
         const claimedEmbed = EmbedUtils.createTicketEmbed(
             'Support Ticket - Claimed',
-            `Thanks for contacting support! A staff member will be with you soon.`
+            `Thanks for contacting support! A staff member will be with you soon.`,
+            interaction.user
         ).addFields(
             { name: '📋 Ticket ID', value: `#${interaction.channel.id.slice(-6)}`, inline: true },
             { name: '👤 Created By', value: interaction.channel.topic || 'Unknown', inline: true },

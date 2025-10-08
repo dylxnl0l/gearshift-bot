@@ -172,8 +172,9 @@ module.exports = {
         try {
             // Check if user already has an open ticket
             const existingTicket = interaction.guild.channels.cache.find(
-                channel => channel.name === `ticket-${interaction.user.username.toLowerCase()}` &&
-                          channel.type === 0 // GuildText
+                channel => channel.name.startsWith('ticket-') &&
+                          channel.type === 0 && // GuildText
+                          channel.topic && channel.topic.includes(interaction.user.id)
             );
 
             if (existingTicket) {
@@ -184,11 +185,36 @@ module.exports = {
                 return await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             }
 
+            // Find or create Tickets category
+            let ticketsCategory = interaction.guild.channels.cache.find(
+                channel => channel.name === 'Tickets' && channel.type === 4 // Category
+            );
+
+            if (!ticketsCategory) {
+                ticketsCategory = await interaction.guild.channels.create({
+                    name: 'Tickets',
+                    type: 4, // Category
+                    permissionOverwrites: [
+                        {
+                            id: interaction.guild.roles.everyone.id,
+                            deny: ['ViewChannel']
+                        }
+                    ]
+                });
+            }
+
+            // Generate ticket number
+            const existingTickets = interaction.guild.channels.cache.filter(
+                channel => channel.name.startsWith('ticket-') && channel.parentId === ticketsCategory.id
+            );
+            const ticketNumber = existingTickets.size + 1;
+
             // Create ticket channel
             const ticketChannel = await interaction.guild.channels.create({
-                name: `ticket-${interaction.user.username.toLowerCase()}`,
+                name: `ticket-${ticketNumber.toString().padStart(2, '0')}`,
                 type: 0, // GuildText
-                parent: config.channels.tickets,
+                parent: ticketsCategory,
+                topic: `Ticket #${ticketNumber} - ${interaction.user.tag} (${interaction.user.id})`,
                 permissionOverwrites: [
                     {
                         id: interaction.guild.roles.everyone.id,

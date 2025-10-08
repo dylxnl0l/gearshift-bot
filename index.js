@@ -2,27 +2,51 @@ const { Client, GatewayIntentBits, Collection, Events } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 // Load configuration from environment variables or config.json
-const config = process.env.DISCORD_TOKEN ? {
-    token: process.env.DISCORD_TOKEN,
-    clientId: process.env.CLIENT_ID,
-    guildId: process.env.GUILD_ID,
-    channels: {
-        logs: process.env.LOGS_CHANNEL_ID,
-        tickets: process.env.TICKETS_CHANNEL_ID
-    },
-    roles: {
-        moderator: process.env.MODERATOR_ROLE_ID,
-        admin: process.env.ADMIN_ROLE_ID,
-        owner: process.env.OWNER_ROLE_ID
-    },
-    music: {
-        maxQueueSize: parseInt(process.env.MAX_QUEUE_SIZE) || 50,
-        defaultVolume: parseFloat(process.env.DEFAULT_VOLUME) || 0.5
-    },
-    developer: {
-        userId: process.env.DEVELOPER_USER_ID
+let config;
+
+if (process.env.DISCORD_TOKEN) {
+    // Use environment variables (production)
+    config = {
+        token: process.env.DISCORD_TOKEN,
+        clientId: process.env.CLIENT_ID,
+        guildId: process.env.GUILD_ID,
+        channels: {
+            logs: process.env.LOGS_CHANNEL_ID,
+            tickets: process.env.TICKETS_CHANNEL_ID
+        },
+        roles: {
+            moderator: process.env.MODERATOR_ROLE_ID,
+            admin: process.env.ADMIN_ROLE_ID,
+            owner: process.env.OWNER_ROLE_ID
+        },
+        music: {
+            maxQueueSize: parseInt(process.env.MAX_QUEUE_SIZE) || 50,
+            defaultVolume: parseFloat(process.env.DEFAULT_VOLUME) || 0.5
+        },
+        developer: {
+            userId: process.env.DEVELOPER_USER_ID
+        }
+    };
+} else {
+    // Try to load config.json (development)
+    try {
+        config = require('./config.json');
+    } catch (error) {
+        console.error('❌ Configuration Error:');
+        console.error('No environment variables found and config.json not found.');
+        console.error('Please set the following environment variables:');
+        console.error('- DISCORD_TOKEN');
+        console.error('- CLIENT_ID');
+        console.error('- GUILD_ID');
+        console.error('- LOGS_CHANNEL_ID');
+        console.error('- TICKETS_CHANNEL_ID');
+        console.error('- MODERATOR_ROLE_ID');
+        console.error('- ADMIN_ROLE_ID');
+        console.error('- OWNER_ROLE_ID');
+        console.error('- DEVELOPER_USER_ID');
+        process.exit(1);
     }
-} : require('./config.json');
+}
 
 // Create a new client instance
 const client = new Client({

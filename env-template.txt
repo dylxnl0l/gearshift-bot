@@ -1,0 +1,28 @@
+# Discord Bot Configuration Template
+# Copy these values to your hosting panel environment variables
+# Replace YOUR_BOT_TOKEN_HERE with your actual Discord bot token
+
+# Required Discord Bot Token
+DISCORD_TOKEN=YOUR_BOT_TOKEN_HERE
+
+# Required Bot Application ID
+CLIENT_ID=1424490534491127993
+
+# Required Guild (Server) ID
+GUILD_ID=1407091501850431708
+
+# Channel IDs
+LOGS_CHANNEL_ID=1425322663836127263
+TICKETS_CHANNEL_ID=1407498823298842685
+
+# Role IDs
+MODERATOR_ROLE_ID=1421279984634560622
+ADMIN_ROLE_ID=1407192703019516091
+OWNER_ROLE_ID=1407091540752466051
+
+# Developer Settings
+DEVELOPER_USER_ID=698234989560725575
+
+# Optional Music Settings
+MAX_QUEUE_SIZE=50
+DEFAULT_VOLUME=0.5

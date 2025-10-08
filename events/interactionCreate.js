@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events, EmbedBuilder, Collection } = require('discord.js');
 const ErrorHandler = require('../utils/errorHandler');
 const PermissionUtils = require('../utils/permissions');
 

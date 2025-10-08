@@ -48,6 +48,13 @@
   - Rich embeds with prize and timing info
   - Winner announcement with mentions
 
+### ⚙️ Server Settings & Management
+- **Settings Command** (`/settings`) - Interactive settings menu for server configuration
+- **Anti-Raid Command** (`/antiraid`) - Configure anti-raid protection with thresholds
+- **Auto-Role Command** (`/autorole`) - Set up automatic role assignment for new members
+- **Verify Command** (`/verify`) - Configure verification system with button interactions
+- **Nuke Command** (`/nuke`) - Emergency server protection (removes all channels, bans all members)
+
 ### ⚙️ General Commands
 - **Ping Command** (`/ping`) - Check bot latency, memory usage, and uptime
 - **Announce Command** (`/announce`) - Send server announcements with color options
@@ -57,11 +64,15 @@
 - **SQLite Database** (`modlogs.db`) for persistent storage
 - **Moderation Logs Table** - Stores all moderation actions
 - **Giveaways Table** - Tracks giveaway data and participants
+- **Guild Settings Table** - Stores server-specific configurations
+- **Verification Table** - Tracks user verification status
+- **Raid Protection Table** - Monitors and logs suspicious activity
 - **Automatic Logging** - All moderation actions logged to database
 
 ### 🎨 Rich User Interface
 - **Custom Embeds** - Beautiful, color-coded embeds for all responses
 - **Interactive Buttons** - Modern button-based interactions
+- **Settings Menu** - Dropdown-based settings configuration
 - **Status Indicators** - Visual status indicators (claimed/unclaimed tickets)
 - **Error Handling** - Comprehensive error handling with user-friendly messages
 - **DM Notifications** - Automatic DM notifications for moderation actions
@@ -82,8 +93,9 @@
 | Tickets | `/ticket setup`, `/ticket create`, `/ticket close` | 3 |
 | Music | `/play`, `/skip`, `/queue`, `/stop` | 4 |
 | Giveaways | `/giveaway start`, `/giveaway end`, `/giveaway reroll` | 3 |
+| Settings | `/settings`, `/antiraid`, `/autorole`, `/verify`, `/nuke` | 5 |
 | General | `/ping`, `/announce`, `/profile` | 3 |
-| **Total** | | **19 Commands** |
+| **Total** | | **24 Commands** |
 
 ## 🎯 Key Features
 
@@ -110,6 +122,13 @@
 - Participant tracking and management
 - Automatic winner selection
 - Reroll functionality
+
+### ⚙️ Advanced Server Management
+- **Settings Menu** - Interactive dropdown for server configuration
+- **Anti-Raid Protection** - Automatic detection and prevention of raids
+- **Auto-Role System** - Automatic role assignment for new members
+- **Verification System** - Button-based user verification
+- **Emergency Nuke** - Complete server protection in case of raids
 
 ### 📊 Data Management
 - SQLite database for persistent storage

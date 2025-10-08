@@ -25,6 +25,8 @@ module.exports = {
                 await this.handleRemoveUserTicket(interaction);
             } else if (interaction.customId === 'join_giveaway') {
                 await this.handleJoinGiveaway(interaction);
+            } else if (interaction.customId === 'verify_button') {
+                await this.handleVerifyButton(interaction);
             }
         } catch (error) {
             console.error('Error handling button interaction:', error);
@@ -409,6 +411,71 @@ module.exports = {
 
         } catch (error) {
             console.error('Error joining giveaway:', error);
+            await ErrorHandler.handleError(error, interaction, interaction.client);
+        }
+    },
+
+    async handleVerifyButton(interaction) {
+        try {
+            const Database = require('../utils/database');
+            const database = new Database();
+            
+            const guildId = interaction.guild.id;
+            const settings = await database.getGuildSettings(guildId);
+            
+            if (!settings || !settings.verify_role_id) {
+                const errorEmbed = EmbedUtils.createErrorEmbed(
+                    'Verification Not Set Up',
+                    'The verification system is not configured for this server.'
+                );
+                return await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            }
+
+            // Check if user is already verified
+            const isVerified = await database.isUserVerified(interaction.user.id, guildId);
+            if (isVerified) {
+                const alreadyVerifiedEmbed = EmbedUtils.createWarningEmbed(
+                    'Already Verified',
+                    'You are already verified on this server!'
+                );
+                return await interaction.reply({ embeds: [alreadyVerifiedEmbed], ephemeral: true });
+            }
+
+            // Assign verification role
+            const role = interaction.guild.roles.cache.get(settings.verify_role_id);
+            if (!role) {
+                const errorEmbed = EmbedUtils.createErrorEmbed(
+                    'Verification Role Not Found',
+                    'The verification role could not be found. Please contact an administrator.'
+                );
+                return await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            }
+
+            try {
+                await interaction.member.roles.add(role, 'User verification');
+                await database.verifyUser(interaction.user.id, guildId);
+                
+                const successEmbed = EmbedUtils.createSuccessEmbed(
+                    'Verification Successful',
+                    'You have been successfully verified! Welcome to the server!'
+                ).addFields(
+                    { name: '🎭 Role Assigned', value: role.toString(), inline: true },
+                    { name: '✅ Status', value: 'Verified', inline: true }
+                );
+                
+                await interaction.reply({ embeds: [successEmbed], ephemeral: true });
+            } catch (error) {
+                console.error('Failed to assign verification role:', error);
+                const errorEmbed = EmbedUtils.createErrorEmbed(
+                    'Verification Failed',
+                    'Failed to assign the verification role. Please contact an administrator.'
+                );
+                await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            }
+
+            database.close();
+        } catch (error) {
+            console.error('Error handling verification:', error);
             await ErrorHandler.handleError(error, interaction, interaction.client);
         }
     }

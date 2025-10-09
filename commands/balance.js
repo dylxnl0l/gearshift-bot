@@ -2,8 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Database = require('../utils/database');
 const { createErrorEmbed } = require('../utils/embeds');
 
-const db = new Database();
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('balance')
@@ -16,6 +14,7 @@ module.exports = {
     
     async execute(interaction) {
         try {
+            const db = new Database();
             const guildId = interaction.guild.id;
             const targetUser = interaction.options.getUser('user') || interaction.user;
             const userId = targetUser.id;
@@ -79,7 +78,7 @@ module.exports = {
         } catch (error) {
             console.error('Balance command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while checking balance. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while checking balance. Please try again.')], 
                 ephemeral: true 
             });
         }

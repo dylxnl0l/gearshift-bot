@@ -100,7 +100,7 @@ module.exports = {
         } catch (error) {
             console.error('Stats command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while fetching stats. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while fetching stats. Please try again.')], 
                 ephemeral: true 
             });
         }

@@ -97,7 +97,7 @@ module.exports = {
         } catch (error) {
             console.error('Reset stats command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while resetting stats. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while resetting stats. Please try again.')], 
                 ephemeral: true 
             });
         }

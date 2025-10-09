@@ -2,8 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('disc
 const Database = require('../utils/database');
 const { createErrorEmbed, createSuccessEmbed } = require('../utils/embeds');
 
-const db = new Database();
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('race')
@@ -40,6 +38,7 @@ module.exports = {
     
     async execute(interaction) {
         try {
+            const db = new Database();
             const guildId = interaction.guild.id;
             const userId = interaction.user.id;
             const subcommand = interaction.options.getSubcommand();
@@ -241,7 +240,7 @@ module.exports = {
         } catch (error) {
             console.error('Race command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred during the race. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred during the race. Please try again.')], 
                 ephemeral: true 
             });
         }

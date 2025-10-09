@@ -2,8 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Database = require('../utils/database');
 const { createErrorEmbed } = require('../utils/embeds');
 
-const db = new Database();
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('leaderboard')
@@ -28,6 +26,7 @@ module.exports = {
     
     async execute(interaction) {
         try {
+            const db = new Database();
             const guildId = interaction.guild.id;
             const sortBy = interaction.options.getString('type') || 'credits';
             const limit = interaction.options.getInteger('limit') || 10;
@@ -103,7 +102,7 @@ module.exports = {
         } catch (error) {
             console.error('Leaderboard command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while fetching the leaderboard. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while fetching the leaderboard. Please try again.')], 
                 ephemeral: true 
             });
         }

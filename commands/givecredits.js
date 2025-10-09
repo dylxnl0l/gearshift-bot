@@ -72,7 +72,7 @@ module.exports = {
         } catch (error) {
             console.error('Give credits command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while giving credits. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while giving credits. Please try again.')], 
                 ephemeral: true 
             });
         }

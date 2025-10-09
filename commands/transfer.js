@@ -94,7 +94,7 @@ module.exports = {
         } catch (error) {
             console.error('Transfer command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred during the transfer. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred during the transfer. Please try again.')], 
                 ephemeral: true 
             });
         }

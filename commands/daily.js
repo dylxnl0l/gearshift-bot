@@ -2,8 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Database = require('../utils/database');
 const { createErrorEmbed, createSuccessEmbed } = require('../utils/embeds');
 
-const db = new Database();
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('daily')
@@ -11,6 +9,7 @@ module.exports = {
     
     async execute(interaction) {
         try {
+            const db = new Database();
             const guildId = interaction.guild.id;
             const userId = interaction.user.id;
 
@@ -72,7 +71,7 @@ module.exports = {
         } catch (error) {
             console.error('Daily command error:', error);
             await interaction.reply({ 
-                embeds: [createErrorEmbed('An error occurred while claiming your daily reward. Please try again.')], 
+                embeds: [createErrorEmbed('Error', 'An error occurred while claiming your daily reward. Please try again.')], 
                 ephemeral: true 
             });
         }

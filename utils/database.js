@@ -79,6 +79,36 @@ class Database {
                 ip_hash TEXT
             )
         `);
+
+        // Create racing economy tables
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS racing_users (
+                user_id TEXT PRIMARY KEY,
+                guild_id TEXT NOT NULL,
+                credits INTEGER DEFAULT 1000,
+                total_races INTEGER DEFAULT 0,
+                wins INTEGER DEFAULT 0,
+                losses INTEGER DEFAULT 0,
+                daily_claimed INTEGER DEFAULT 0,
+                last_daily INTEGER DEFAULT 0,
+                created_at INTEGER DEFAULT 0,
+                updated_at INTEGER DEFAULT 0
+            )
+        `);
+
+        this.db.run(`
+            CREATE TABLE IF NOT EXISTS racing_races (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                guild_id TEXT NOT NULL,
+                racer1_id TEXT NOT NULL,
+                racer2_id TEXT,
+                winner_id TEXT,
+                credits_wagered INTEGER DEFAULT 0,
+                race_type TEXT NOT NULL,
+                timestamp INTEGER NOT NULL,
+                duration REAL
+            )
+        `);
     }
 
     // Modlogs methods
@@ -291,6 +321,140 @@ class Database {
                 (err, rows) => {
                     if (err) reject(err);
                     else resolve(rows);
+                }
+            );
+        });
+    }
+
+    // Racing economy methods
+    getRacingUser(userId, guildId) {
+        return new Promise((resolve, reject) => {
+            this.db.get(
+                'SELECT * FROM racing_users WHERE user_id = ? AND guild_id = ?',
+                [userId, guildId],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+    }
+
+    createRacingUser(userId, guildId) {
+        return new Promise((resolve, reject) => {
+            const stmt = this.db.prepare(`
+                INSERT INTO racing_users (user_id, guild_id, created_at, updated_at)
+                VALUES (?, ?, ?, ?)
+            `);
+            
+            const now = Date.now();
+            stmt.run([userId, guildId, now, now], function(err) {
+                if (err) reject(err);
+                else resolve(this.lastID);
+            });
+            
+            stmt.finalize();
+        });
+    }
+
+    updateRacingUser(userId, guildId, updates) {
+        return new Promise((resolve, reject) => {
+            const fields = [];
+            const values = [];
+            
+            if (updates.credits !== undefined) {
+                fields.push('credits = ?');
+                values.push(updates.credits);
+            }
+            if (updates.total_races !== undefined) {
+                fields.push('total_races = ?');
+                values.push(updates.total_races);
+            }
+            if (updates.wins !== undefined) {
+                fields.push('wins = ?');
+                values.push(updates.wins);
+            }
+            if (updates.losses !== undefined) {
+                fields.push('losses = ?');
+                values.push(updates.losses);
+            }
+            if (updates.daily_claimed !== undefined) {
+                fields.push('daily_claimed = ?');
+                values.push(updates.daily_claimed);
+            }
+            if (updates.last_daily !== undefined) {
+                fields.push('last_daily = ?');
+                values.push(updates.last_daily);
+            }
+            
+            fields.push('updated_at = ?');
+            values.push(Date.now());
+            values.push(userId, guildId);
+            
+            this.db.run(
+                `UPDATE racing_users SET ${fields.join(', ')} WHERE user_id = ? AND guild_id = ?`,
+                values,
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
+    }
+
+    getRacingLeaderboard(guildId, limit = 10, sortBy = 'credits') {
+        return new Promise((resolve, reject) => {
+            const validSorts = ['credits', 'wins', 'total_races'];
+            const sortColumn = validSorts.includes(sortBy) ? sortBy : 'credits';
+            
+            this.db.all(
+                `SELECT * FROM racing_users WHERE guild_id = ? ORDER BY ${sortColumn} DESC LIMIT ?`,
+                [guildId, limit],
+                (err, rows) => {
+                    if (err) reject(err);
+                    else resolve(rows);
+                }
+            );
+        });
+    }
+
+    createRace(guildId, racer1Id, racer2Id, raceType, creditsWagered = 0) {
+        return new Promise((resolve, reject) => {
+            const stmt = this.db.prepare(`
+                INSERT INTO racing_races (guild_id, racer1_id, racer2_id, race_type, credits_wagered, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `);
+            
+            stmt.run([guildId, racer1Id, racer2Id, raceType, creditsWagered, Date.now()], function(err) {
+                if (err) reject(err);
+                else resolve(this.lastID);
+            });
+            
+            stmt.finalize();
+        });
+    }
+
+    updateRace(raceId, winnerId, duration) {
+        return new Promise((resolve, reject) => {
+            this.db.run(
+                'UPDATE racing_races SET winner_id = ?, duration = ? WHERE id = ?',
+                [winnerId, duration, raceId],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                }
+            );
+        });
+    }
+
+    getRacingStats(userId, guildId) {
+        return new Promise((resolve, reject) => {
+            this.db.get(
+                'SELECT * FROM racing_users WHERE user_id = ? AND guild_id = ?',
+                [userId, guildId],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
                 }
             );
         });
